@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "759285838807",
+    "firebase_url": "https://posto-app-20-06-19.firebaseio.com",
+    "project_id": "posto-app-20-06-19",
+    "storage_bucket": "posto-app-20-06-19.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:759285838807:android:dff5fb5c2cf3d6cd",
+        "android_client_info": {
+          "package_name": "br.com.raul.posto_app_20_06_19"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "759285838807-a1d81sia6n347qpfbdqogror3f38dkas.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZB1tPVUhRb0x3s-0u0i_zSl_hUpElX_Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "759285838807-a1d81sia6n347qpfbdqogror3f38dkas.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
