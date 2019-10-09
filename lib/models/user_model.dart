@@ -1,8 +1,10 @@
+import 'package:http/http.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:http/http.dart' as http;
 
 class UserModel extends Model {
   FirebaseAuth _auth = FirebaseAuth.instance;
@@ -59,7 +61,8 @@ class UserModel extends Model {
       fireBaseUser = user;
 
       await _loadCurrentUser();
-
+      String teste = await apiRequest();
+      print(teste);
       onSuccess();
       isLoading = false;
       notifyListeners();
@@ -68,6 +71,32 @@ class UserModel extends Model {
       isLoading = false;
       notifyListeners();
     });
+  }
+
+  Future<String> apiRequest() async {
+    // set up POST request arguments
+    var url = 'http://postoapi.com.preview.my-hosting-panel.com/api/Login';
+    Map<String, String> headers = {"Content-type": "application/json"};
+    String json = '{"login": "lucas", "password": "123456789"}';
+    // make POST request
+    Response response = await post(url, headers: headers, body: json);
+    // check the status code for the result
+    //int statusCode = response.statusCode;
+    // this API passes back the id of the new item added to the body
+    //String body = response.body;
+    // {
+    //   "title": "Hello",
+    //   "body": "body text",
+    //   "userId": 1,
+    //   "id": 101
+    // }
+
+
+    //var url = 'http://postoapi.com.preview.my-hosting-panel.com/api/Login';
+    //var response = await http.post(url, body: {'login': 'lucas', 'password': '123456789'});
+    //print('Response status: ${response.statusCode}');
+    //print('Response body: ${response.body}');
+    return response.body;
   }
 
   void signOut() async {

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:posto_app_20_06_19/models/user_model.dart';
+import 'package:posto_app_20_06_19/models/usuario_model.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-import 'Cliente/chamado_screen.dart';
-import 'Tecnico/chamadoTecnico_screen.dart';
 import 'Terceirizada/menu_screen.dart';
 import 'signup_screen.dart';
 
@@ -18,6 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passController = TextEditingController();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   UserModel usuario;
+  UsuarioModel user;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
             )
           ],
         ),
-        body: ScopedModelDescendant<UserModel>(
+        body: ScopedModelDescendant<UserModel>( //UserModel
           builder: (context, child, model){
             if(model.isLoading)
               return Center(child: CircularProgressIndicator(),);
