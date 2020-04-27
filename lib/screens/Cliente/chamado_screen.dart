@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:posto_app_20_06_19/models/usuario_model.dart';
 
 import 'BottomNavigationBars/chamado_navigationBar.dart';
 import 'BottomNavigationBars/novaPreventiva_screen.dart';
 import 'BottomNavigationBars/novoChamado_screen.dart';
 import 'BottomNavigationBars/preventiva_navigationBar.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class ChamadoClienteScreen extends StatefulWidget {
   @override
@@ -44,7 +46,12 @@ class _ChamadoClienteScreenState extends State<ChamadoClienteScreen> {
         ],
         leading: Text("")
       ),
-      body: _pageOptions[_selectedPage],
+      body: ScopedModelDescendant<UsuarioModel>(
+        builder: (context,child, model){
+          return ChamadoPreventiva(_selectedPage, model); //_pageOptions[_selectedPage],
+        }
+
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedPage,
         onTap: (int index){
@@ -64,5 +71,15 @@ class _ChamadoClienteScreenState extends State<ChamadoClienteScreen> {
         ],
       ),
     );
+  }
+}
+
+
+Widget ChamadoPreventiva(index,usuario){
+  if(index == 0){
+    return ChamadoNavigationBar(user: usuario);
+  }
+  else if(index == 1){
+    return PreventivaNavigationBar();
   }
 }

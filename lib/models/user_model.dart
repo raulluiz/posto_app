@@ -1,17 +1,31 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:http/http.dart';
+import 'package:posto_app_20_06_19/datas/user_data.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-//import 'package:http/http.dart' as http;
 
 class UserModel extends Model {
   FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseUser fireBaseUser;
   Map<String, dynamic> userData = Map();
+  UserData _userData;
+
+  String _nome = "";
+  String _token = "";
+  String _idUsuario = "";
+
+  String get nome => _nome;
+  String get token => _token;
+  String get idUsuario => _idUsuario;
 
   bool isLoading = false;
+
+  UserData get userApp => _userData;
 
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
@@ -35,7 +49,7 @@ class UserModel extends Model {
         .createUserWithEmailAndPassword(
         email: userData["email"], password: pass)
         .then((user) async {
-      fireBaseUser = user;
+      fireBaseUser = user as FirebaseUser;
 
       await _saveUserData(userData);
 
@@ -57,27 +71,60 @@ class UserModel extends Model {
     isLoading = true;
     notifyListeners();
 
-    _auth.signInWithEmailAndPassword(email: email, password: pass).then((user) async {
-      fireBaseUser = user;
-
-      await _loadCurrentUser();
-      String teste = await apiRequest();
-      print(teste);
-      onSuccess();
-      isLoading = false;
-      notifyListeners();
-    }).catchError((e) {
+    String teste = await CarregarUsuario(email,pass);
+    if(teste == null){
       onFail();
       isLoading = false;
       notifyListeners();
-    });
+    }
+    final parsed = json.decode(teste);
+    _userData = UserData(parsed);
+
+    onSuccess();
+    isLoading = false;
+    notifyListeners();
+
+//    _auth.signInWithEmailAndPassword(email: email, password: pass).then((user) async {
+//      fireBaseUser = user;
+//
+//      await _loadCurrentUser();
+//
+//
+//      onSuccess();
+//      isLoading = false;
+//      notifyListeners();
+//    }).catchError((e) {
+//      onFail();
+//      isLoading = false;
+//      notifyListeners();
+//    });
   }
 
-  Future<String> apiRequest() async {
+  Future getUser(login, senha) async {
+    //logic for fetching remote data
+    HttpClient httpClient = new HttpClient();
+    HttpClientRequest request = await httpClient.postUrl(Uri.parse("http://postosobcontrole.com/api/Login"));
+    request.headers.set('content-type', 'application/json');
+
+    Map map = {
+      'data': {
+        'login': login,
+        'password': senha
+      },
+    };
+
+    request.add(utf8.encode(json.encode(map)));
+    HttpClientResponse response = await request.close();
+    String reply = await response.transform(utf8.decoder).join();
+    httpClient.close();
+    return reply;
+  }
+
+  Future<String> CarregarUsuario(String login, String senha) async {
     // set up POST request arguments
     var url = 'http://postoapi.com.preview.my-hosting-panel.com/api/Login';
     Map<String, String> headers = {"Content-type": "application/json"};
-    String json = '{"login": "lucas", "password": "123456789"}';
+    String json = '{"login": "$login", "password": "$senha"}';
     // make POST request
     Response response = await post(url, headers: headers, body: json);
     // check the status code for the result
@@ -90,7 +137,6 @@ class UserModel extends Model {
     //   "userId": 1,
     //   "id": 101
     // }
-
 
     //var url = 'http://postoapi.com.preview.my-hosting-panel.com/api/Login';
     //var response = await http.post(url, body: {'login': 'lucas', 'password': '123456789'});

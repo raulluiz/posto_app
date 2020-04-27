@@ -3,6 +3,8 @@ import 'package:posto_app_20_06_19/models/user_model.dart';
 import 'package:posto_app_20_06_19/models/usuario_model.dart';
 import 'package:scoped_model/scoped_model.dart';
 
+import 'Cliente/chamado_screen.dart';
+import 'Tecnico/chamadoTecnico_screen.dart';
 import 'Terceirizada/menu_screen.dart';
 import 'signup_screen.dart';
 
@@ -43,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
             )
           ],
         ),
-        body: ScopedModelDescendant<UserModel>( //UserModel
+        body: ScopedModelDescendant<UsuarioModel>( //UserModel
           builder: (context, child, model){
             if(model.isLoading)
               return Center(child: CircularProgressIndicator(),);
@@ -59,8 +61,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     keyboardType: TextInputType.emailAddress,
                     validator: (text){
-                      if(text.isEmpty || !text.contains("@"))
-                        return "E-mail inválido!";
+                      if(text.isEmpty)
+                        return "Usuário inválido!";
                     },
                   ),
                   SizedBox(height: 16.0,),
@@ -71,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     obscureText: true,
                     validator: (text){
-                      if(text.isEmpty || text.length < 5)
+                      if(text.isEmpty)
                         return "Senha inválida!";
                     },
                   ),
@@ -86,7 +88,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 duration: Duration(seconds: 2),
                               )
                           );
-                        else{
+
+                        /*else{
                           model.recoverPass(_emailController.text);
                           _scaffoldKey.currentState.showSnackBar(
                               SnackBar(content: Text("Confira se email!"),
@@ -94,7 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 duration: Duration(seconds: 2),
                               )
                           );
-                        }
+                        }*/
 
                       },
                       child: Text("Esqueci minha senha",
@@ -114,17 +117,22 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: Theme.of(context).primaryColor,
                         onPressed: (){
                           if(_formKey.currentState.validate()){
-
                           }
+                          user = model;
+                          model.parseUserFromResponse(
+                              login: _emailController.text,
+                              senha: _passController.text,
+                              onSuccess: _onSuccess,
+                              onFail: _onFail);
 
-                          usuario = model;
 
-                          model.signIn(
+
+                          /*model.signIn(
                               email: _emailController.text,
                               pass: _passController.text,
                               onSuccess: _onSuccess,
                               onFail: _onFail
-                          );
+                          );*/
                         }
                     ),
                   )
@@ -138,9 +146,26 @@ class _LoginScreenState extends State<LoginScreen> {
   void _onSuccess(){
     Navigator.of(context).pop();
     print("-----------Flutter App Raul-------------");
-    Navigator.of(context).push(
-        MaterialPageRoute(builder: (context)=>MenuScreen())
-    );
+    var perfil = user.userApp.perfil;
+    if(perfil == "5" || perfil == "6") //Cliente
+    {
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: (context)=>ChamadoClienteScreen()) //ChamadoClienteScreen
+      );
+    }
+    else if(perfil == "1") //Administrador
+      {
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (context)=>ChamadoClienteScreen()) //MenuScreen
+        );
+      }
+    else if(perfil == "4") //Técnico
+    {
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: (context)=>ChamadoTecnicoScreen()) //MenuScreen
+      );
+    }
+
   }
 
   void _onFail(){

@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:posto_app_20_06_19/models/chamado_model.dart';
 import 'package:posto_app_20_06_19/models/user_model.dart';
+import 'package:posto_app_20_06_19/models/usuario_model.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class ChamadoView extends StatefulWidget {
+  final Chamado chamado;
+
+  const ChamadoView({Key key, this.chamado}): super(key: key);
+
   @override
   _ChamadoViewState createState() => _ChamadoViewState();
 }
@@ -27,7 +33,7 @@ class _ChamadoViewState extends State<ChamadoView> {
             )
           ],
         ),
-        body: ScopedModelDescendant<UserModel>(
+        body: ScopedModelDescendant<UsuarioModel>(
           builder: (context,child, model){
             if(model.isLoading)
               return Center(child: CircularProgressIndicator(),);
